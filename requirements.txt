@@ -1,5 +1,4 @@
-slack
-slackclient
+slack_bolt
 flask
 google
 pymongo[srv]
