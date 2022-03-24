@@ -1,7 +1,6 @@
 slack
 slackeventsapi
 flask
-wsgi
+gunicorn
 google
 pymongo[srv]
-gunicorn
