@@ -3,7 +3,7 @@ from slack_bolt import App
 
 # Initializes your app with your bot token and signing secret
 app = App(
-    token=os.environ.get("SLACK_BOT_TOKEN"),
+    token=os.environ.get("SLACK_TOKEN"),
     signing_secret=os.environ.get("SIGNING_SECRET")
 )
 
