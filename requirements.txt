@@ -1,0 +1,4 @@
+slack
+google
+pymongo[srv]
+gunicorn
