@@ -1,8 +1,6 @@
 import slack
 import os
 from flask import Flask
-from dotenv import load_dotenv
-from slackeventsapi import SlackEventAdapter
 
 client = slack.WebClient(token=os.environ["SLACK_TOKEN"])
 
