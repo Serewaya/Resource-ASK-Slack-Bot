@@ -10,5 +10,4 @@ if __name__ == "__main__":
     SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()
 
 
-app.chat_postMessage(channel='general', text="Currently sending message after being deployed on heroku :)")
     
