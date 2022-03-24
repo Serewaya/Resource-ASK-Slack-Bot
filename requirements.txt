@@ -1,4 +1,4 @@
-slack
+slackclient
 flask
 google
 pymongo[srv]
