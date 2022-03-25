@@ -1,5 +1,6 @@
 slack_bolt
 gunicorn
 flask
+aiohttp
 google
 pymongo[srv]
