@@ -17,7 +17,8 @@ def message_hello(message, say):
     say(f"Hey there <@{message['user']}>!")
  
 # Start your app
-keep_alive()
+if __name__ == '__main__':
+    keep_alive()
 
 
     
