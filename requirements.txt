@@ -1,4 +1,5 @@
 slack_bolt
+gunicorn
 flask
 google
 pymongo[srv]
