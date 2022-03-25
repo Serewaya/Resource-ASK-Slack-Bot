@@ -2,8 +2,7 @@ import os
 from aiohttp import client
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
-from app import keep_alive
-
+from app.main import app
 
 # Initializes your app with your bot token and socket mode handler
 client = App(token=os.environ.get("SLACK_SECRET"))
@@ -17,8 +16,10 @@ def message_hello(message, say):
     say(f"Hey there <@{message['user']}>!")
  
 # Start your app
-if __name__ == '__main__':
-    keep_alive()
+ 
+if __name__ == "__main__":
+        app.run()
+
 
 
     
