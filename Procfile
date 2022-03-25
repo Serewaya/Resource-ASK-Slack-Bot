@@ -1,1 +1,1 @@
-web: gunicorn app:keep_alive --log-file -
+web: gunicorn keep_alive:app --log-file -
