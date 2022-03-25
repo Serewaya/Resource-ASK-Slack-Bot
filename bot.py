@@ -1,7 +1,11 @@
 import os
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
-from app.main import client
+from pathlib import Path
+from dotenv import load_dotenv
+
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
 # Initializes your app with your bot token and socket mode handler
 app = App(token=os.environ.get("SLACK_BOT_TOKEN"))
 
@@ -15,5 +19,4 @@ def message_hello(message, say):
 
 # Start your app
 if __name__ == "__main__":
-    client.run()
     SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()    
