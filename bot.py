@@ -13,7 +13,7 @@ def message_hello(message, say):
     say(f"Hey there <@{message['user']}>!")
 
 if __name__ == "__main__":
-    app.start(port=int(os.environ.get("PORT", 5000)))
+    app.start(host='0.0.0.0', port=5000)
 
 
     
