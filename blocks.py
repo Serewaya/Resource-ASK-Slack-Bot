@@ -74,7 +74,7 @@ def user_entry(link, section, expiration, area, gender):
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "Here are your search requirements:\n*<Please review them and press the approve or deny button to get your results>*"
+				"text": "Here are your search requirements:\n*Please review them and press the approve or deny button to get your results*"
 			}
 		},
 		{
@@ -113,7 +113,8 @@ def user_entry(link, section, expiration, area, gender):
 						"text": "Approve"
 					},
 					"style": "primary",
-					"value": "click_me_123"
+					"value": "click_me_123",
+					"action_id": "return_results"
 				},
 				{
 					"type": "button",
@@ -123,7 +124,8 @@ def user_entry(link, section, expiration, area, gender):
 						"text": "Deny"
 					},
 					"style": "danger",
-					"value": "click_me_123"
+					"value": "click_me_123",
+					"action_id": "dontsearch"
 				}
 			]
 		}

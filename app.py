@@ -6,6 +6,13 @@ from pathlib import Path
 from dotenv import load_dotenv
 from flask import Flask
 import blocks
+import functions
+import pymongo
+from pymongo import MongoClient 
+
+cluster=MongoClient("mongodb+srv://projectask:wD4odl0AK8ahUmFc@cluster0.e0sdb.mongodb.net/discord?retryWrites=true&w=majority")
+db = cluster["discord"]
+collection = db["id"]
 
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
@@ -29,6 +36,7 @@ def action_button_click(ack, say):
     @app.event("message")
     def handle_message_events(body, message, say):
         content = str(message["text"])
+        global indices
         indices = content.split(", ")
         if len(indices) != 5:
             say("*Please enter in the form of:* _link, category, expiration time, area, gender_")
@@ -40,6 +48,13 @@ def action_button_click(ack, say):
             indices = [x.lower() for x in indices]
             link, section, expiration, area, gender = indices
             say(blocks.user_entry(link, section, expiration, area, gender))
+
+@app.action("return_results")
+def action_button_click(ack, say):
+    ack()
+    results = functions.return_database(indices)
+    for i in results:
+        say(i['link'])
 
 @app.action("stopoutput")
 def action_button_click(ack, say):
