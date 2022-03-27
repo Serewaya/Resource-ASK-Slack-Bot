@@ -1,8 +1,11 @@
 import os
+from pydoc import text
+from unicodedata import category
 from slack_bolt import App
 from pathlib import Path
 from dotenv import load_dotenv
 from flask import Flask
+import blocks
 
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
@@ -12,39 +15,41 @@ app = App(
     token=os.environ.get("SLACK_BOT_TOKEN"),
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
 )
-import os
-from slack_bolt import App
 
-# Initializes your app with your bot token and signing secret
-app = App(
-    token=os.environ.get("SLACK_BOT_TOKEN"),
-    signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
-)
-
-# Listens to incoming messages that contain "hello"
-@app.message("hello")
-def message_hello(message, say):
-    # say() sends a message to the channel where the event was triggered
-    say(
-        blocks=[
-            {
-                "type": "section",
-                "text": {"type": "mrkdwn", "text": f"Hey there <@{message['user']}>!"},
-                "accessory": {
-                    "type": "button",
-                    "text": {"type": "plain_text", "text": "Click Me"},
-                    "action_id": "button_click"
-                }
-            }
-        ],
-        text=f"Hey there <@{message['user']}>!"
-    )
-
-@app.action("button_click")
-def action_button_click(body, ack, say):
-    # Acknowledge the action
+@app.command("/output")
+def initial(ack, say, command):
+    # Acknowledge command request
     ack()
-    say(f"<@{body['user']['id']}> clicked the button")
+    say(blocks.output_initial())
+
+@app.action("startoutput")
+def action_button_click(ack, say):
+    ack()
+    say(blocks.output_instructions())
+    @app.event("message")
+    def handle_message_events(body, message, say):
+        content = str(message["text"])
+        indices = content.split(", ")
+        if len(indices) != 5:
+            say("*Please enter in the form of:* _link, category, expiration time, area, gender_")
+            @app.event("message")
+            def handle_message_events(body, message, say):
+                content = message["text"]
+                indices = content.split(", ")
+        if len(indices) ==5:
+            indices = [x.lower() for x in indices]
+            link, section, expiration, area, gender = indices
+            say(blocks.user_entry(link, section, expiration, area, gender))
+
+@app.action("stopoutput")
+def action_button_click(ack, say):
+    ack()
+    say("Sound's great, make sure to call the '/output' slash command when you want to output a resource from the Resource ASK database")
+# @app.action("button_click")
+# def action_button_click(body, ack, say):
+#     # Acknowledge the action
+#     ack()
+#     say(f"<@{body['user']['id']}> clicked the button")
 
 # Start your app
 if __name__ == "__main__":
