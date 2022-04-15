@@ -22,12 +22,28 @@ app = App(
     token=os.environ.get("SLACK_BOT_TOKEN"),
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
 )
+@app.event("app_home_opened")
+def app_home_opened(event, client, logger):
+    user_id = event["user"]
+
+    try:
+        # Call the views.publish method using the WebClient passed to listeners
+        result = client.views_publish(
+            user_id=user_id,
+            view=blocks.homepage()
+        )
+        logger.info(result)
+
+    except SlackApiError as e:
+        logger.error("Error fetching conversations: {}".format(e))
+
 
 @app.command("/output")
 def initial(ack, say, command):
     # Acknowledge command request
     ack()
-    say(blocks.output_initial())
+    elements=blocks.output_initial()
+    say({"blocks": elements})
 
 @app.action("startoutput")
 def action_button_click(ack, say):
@@ -56,16 +72,22 @@ def action_button_click(ack, say):
     for i in results:
         say(i['link'])
 
+
 @app.action("stopoutput")
 def action_button_click(ack, say):
     ack()
     say("Sound's great, make sure to call the '/output' slash command when you want to output a resource from the Resource ASK database")
-# @app.action("button_click")
-# def action_button_click(body, ack, say):
-#     # Acknowledge the action
-#     ack()
-#     say(f"<@{body['user']['id']}> clicked the button")
 
-# Start your app
+@app.action("output_resource")
+def action_button_click(body, ack, say, client):
+    ack()
+    user_id = body["user"]['id']
+    client.chat_postMessage(
+        channel=user_id, 
+        blocks = blocks.output_initial(), 
+        text = "Click your messages with the Resource ASK Bot to see more information"
+    )
+
+
 if __name__ == "__main__":
     app.start(port=int(os.environ.get("PORT", 3000)))
