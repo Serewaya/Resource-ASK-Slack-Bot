@@ -24,20 +24,124 @@ def output_instructions():
 		}
 	]
 }
-
-def output_initial():
+def resource_requirements():
+	return {
+	"type": "modal",
+	"callback_id": "output_submit_1",
+	"title": {
+		"type": "plain_text",
+		"text": "Resource Requirements",
+		"emoji": True
+	},
+	"submit": {
+		"type": "plain_text",
+		"text": "Next Step",
+		"emoji": True
+	},
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": True
+	},
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "Step 1/2",
+				"emoji": True
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "In order to find the best resources for you we require some information related to the resource. To see more information related to our resource categorization process check out the <https://serewaya.github.io/resource-ask/resource-categorization/|Resource ASK documentation.>"
+				}
+			]
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "input",
+			"block_id": "category",
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "category",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Resource Category"
+				}
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Category",
+				"emoji": True
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "The Resource Category is the main aspect you are searching for, try out ‘loans’ to see how it works. You can also check out this <https://serewaya.github.io/resource-ask/avaliable-categories/|Category List> to see all the categories available."
+				}
+			]
+		},
+		{
+			"type": "input",
+			"block_id": "expiration",
+			"element": {
+				"type": "datepicker",
+				"initial_date": "2022-04-20",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select a date",
+					"emoji": True
+				},
+				"action_id": "expiration"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Expiration Date",
+				"emoji": True
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "plain_text",
+					"text": "The Resource Expiration Date is the deadline for applications or time period a resource is offered. If you don’t have an expiration date simply leave it as the default value.",
+					"emoji": True
+				}
+			]
+		}
+	]
+}
+def output_initial(user_name):
     return [
 		{
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "*Hey there, this command output’s resources from the Resource ASK’s database*\nDo you want to continue searching?\n_Please press the yes or no button._"
+				"text": f'*Welcome to the Output Command {user_name}*'
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "This command retrieves listings from the Resource ASK Database.\n\n*Do you want to continue with this command?*\n\n_Please press the yes or no button_"
 			},
 			"accessory": {
 				"type": "image",
-				"image_url": "https://api.slack.com/img/blocks/bkb_template_images/approvalsNewDevice.png",
+				"image_url": "https://cdn-icons.flaticon.com/png/512/874/premium/874728.png?token=exp=1650222216~hmac=ae3e55397ec8c7549d8c6a9ba3d8ffac",
 				"alt_text": "computer thumbnail"
-			}},
+			}
+		},
 		{
 			"type": "actions",
 			"elements": [
