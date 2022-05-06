@@ -12,6 +12,8 @@ import functions
 import pymongo
 from pymongo import MongoClient 
 from linkpreview import link_preview
+from slack_bolt.adapter.socket_mode import SocketModeHandler
+
 page =1
 
 cluster=MongoClient("mongodb+srv://projectask:wD4odl0AK8ahUmFc@cluster0.e0sdb.mongodb.net/discord?retryWrites=true&w=majority")
@@ -208,4 +210,4 @@ def action_button_click(body, ack, say, client):
 
 
 if __name__ == "__main__":
-    app.start()
+    SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()
