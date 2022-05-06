@@ -4,3 +4,4 @@ flask
 aiohttp
 google
 pymongo[srv]
+slack_bolt.adapter.socket_mode
