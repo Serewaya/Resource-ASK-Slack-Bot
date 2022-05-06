@@ -220,4 +220,4 @@ def action_button_click(body, ack, say, client):
 
 
 if __name__ == "__main__":
-    SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()
+    app.start(port=int(os.environ.get("PORT", 3000)))
