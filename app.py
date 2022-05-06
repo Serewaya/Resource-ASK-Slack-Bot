@@ -1,5 +1,7 @@
 import os
-from pydoc import text
+from pydoc import pager, text
+from sunau import Au_read
+from tkinter import PAGES
 from unicodedata import category
 from slack_bolt import App
 from pathlib import Path
@@ -9,6 +11,8 @@ import blocks
 import functions
 import pymongo
 from pymongo import MongoClient 
+from linkpreview import link_preview
+page =1
 
 cluster=MongoClient("mongodb+srv://projectask:wD4odl0AK8ahUmFc@cluster0.e0sdb.mongodb.net/discord?retryWrites=true&w=majority")
 db = cluster["discord"]
@@ -51,12 +55,134 @@ def action_button_click(ack, body, client):
 
 
 @app.view("output_submit_1")
-def handle_view_events(ack, body, say, view):
+def handle_view_events(ack, body, say, view, client):
     ack()
-    value1 = view['state']['values']['category']['category']['value']
-    value2 = view['state']['values']['expiration']['expiration']['selected_date']
-    print(value1)
-    print(value2)
+    global categories
+    global expiration
+    categories = view['state']['values']['category']['category']['value']
+    expiration = view['state']['values']['expiration']['expiration']['selected_date']
+    if expiration == "2022-04-20":
+        expiration="none"
+    categories = categories.split(", ")
+    client.views_open(
+        trigger_id =body["trigger_id"], 
+        view=blocks.personal_information()
+    )
+
+@app.view("output_submit_2")
+def handle_view_events(ack, body, say, view, client):
+    ack()
+    user_id = body["user"]['id']
+    global area
+    global gender
+    area = view['state']['values']['area']['static_select-action']['selected_option']['value']
+    gender = view['state']['values']['gender']['static_select-action']['selected_option']['value']
+    specifics = ", ".join([str(item) for item in categories])
+    valid = blocks.user_entry(specifics.title(), expiration.title(), area.title(), gender.title())
+    client.chat_postMessage(
+        channel=user_id, 
+        blocks = valid, 
+        text = "Click your messages with the Resource ASK Bot to see more information"
+    )
+
+@app.action("dontsearch")
+def action_button_click(ack, body, client):
+    ack()
+    client.views_open(
+        trigger_id=body["trigger_id"],
+        # A simple view payload for a modal
+        view=blocks.resource_requirements()
+    )
+    
+@app.action("return_results")
+def action_button_click(ack, say, body):
+    ack()
+    user_id = body["user"]['id']
+    values = {"category": { "$in": categories}, "expiration": expiration, "area": area, "gender":gender }
+    search = values.copy()
+    for value in values:
+        if values[value] == "none":
+            del search[value]
+    results = collection.find(search)
+    cat = ", ".join([str(item) for item in categories])
+    cat = cat.title()
+    count=0
+    global listings
+    listings = []
+    for item in results:
+        count+=1
+        listings.append(item)
+    output = []
+    search_location =area.title()
+    if search_location == "None":
+        search_location="Any Area"
+    output.append(blocks.amount(count, search_location, cat))
+    output.append(blocks.divider())
+    global index
+    index =0
+    for listing in listings:
+        link = listing["link"]
+        due = listing["expiration"].title()
+        location = listing['area'].title()
+        try:
+            preview = link_preview(link)
+            title = preview.title
+            description = preview.description
+            description = functions.blurb_format(description)
+            image = preview.absolute_image
+        except Exception as e:
+            title = link
+            description = "No description is avalible"
+            image = "https://cdn-icons.flaticon.com/png/512/1205/premium/1205916.png?token=exp=1651334128~hmac=71d47b4ca8fb81ca67d34a318a5c2ee5"
+        if image == None:
+            image = "https://cdn-icons.flaticon.com/png/512/1205/premium/1205916.png?token=exp=1651334128~hmac=71d47b4ca8fb81ca67d34a318a5c2ee5"
+        output.append(blocks.return_listing(link, title, description, image, due))
+        output.append(blocks.location(location))
+        output.append(blocks.divider())
+        index +=1
+        if len(listings)>3 and index ==3:
+           output.append(blocks.more_listings()) 
+           say(blocks=output, text = "Your results")
+           break
+        elif index == len(listings):
+            say(blocks=output, text="Your results")
+            index =3
+            break
+@app.action("more_results")
+def action_button_click(ack, say, body):
+    ack()
+    next_page=[]
+    global page
+    index = 3*page
+    for i in range(3):
+        listing = listings[index]
+        link = listing["link"]
+        due = listing["expiration"].title()
+        location = listing['area'].title()
+        try:
+            preview = link_preview(link)
+            title = preview.title
+            description = preview.description
+            description = functions.blurb_format(description)
+            image = preview.absolute_image
+        except Exception as e:
+            title = link
+            description = "No description is avalible"
+            image = "https://cdn-icons.flaticon.com/png/512/1205/premium/1205916.png?token=exp=1651334128~hmac=71d47b4ca8fb81ca67d34a318a5c2ee5"
+        if image == None:
+            image = "https://cdn-icons.flaticon.com/png/512/1205/premium/1205916.png?token=exp=1651334128~hmac=71d47b4ca8fb81ca67d34a318a5c2ee5"
+        next_page.append(blocks.return_listing(link, title, description, image, due))
+        next_page.append(blocks.location(location))
+        next_page.append(blocks.divider())
+        index +=1
+    if index==len(listings):
+        say(blocks=next_page, text = "Your results")
+    else:
+        next_page.append(blocks.more_listings()) 
+        say(blocks=next_page, text = "Your results")
+    page+=1
+
+
 
 @app.command("/output")
 def initial(ack, say, command, body):
@@ -64,34 +190,6 @@ def initial(ack, say, command, body):
     ack()
     elements=blocks.output_initial(user)
     say({"blocks": elements})
-
-# @app.action("startoutput")
-# def action_button_click(ack, say):
-#     ack()
-#     say(blocks.output_instructions())
-#     @app.event("message")
-#     def handle_message_events(body, message, say):
-#         content = str(message["text"])
-#         global indices
-#         indices = content.split(", ")
-#         if len(indices) != 5:
-#             say("*Please enter in the form of:* _link, category, expiration time, area, gender_")
-#             @app.event("message")
-#             def handle_message_events(body, message, say):
-#                 content = message["text"]
-#                 indices = content.split(", ")
-#         if len(indices) ==5:
-#             indices = [x.lower() for x in indices]
-#             link, section, expiration, area, gender = indices
-#             say(blocks.user_entry(link, section, expiration, area, gender))
-
-# @app.action("return_results")
-# def action_button_click(ack, say):
-#     ack()
-#     results = functions.return_database(indices)
-#     for i in results:
-#         say(i['link'])
-
 
 @app.action("stopoutput")
 def action_button_click(ack, say):

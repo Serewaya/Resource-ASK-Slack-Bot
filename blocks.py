@@ -1,29 +1,65 @@
-def output_instructions():
+
+def amount(amount, area, category):
+	return{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": f"We found *{amount} Resources* in *{area}* with the category of *{category}*"
+			}
+	}
+def divider():
 	return {
-	"blocks": [
-		{
+			"type": "divider"
+		}
+def more_listings():
+	return {
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"emoji": True,
+						"text": "Next Page"
+					},
+					"value": "click_me_123",
+					"action_id":"more_results"
+				}
+			]
+		}
+def return_listing(link, title,blurb,  image, expiration):
+	return {
+	
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "Great :smile:"
-			}
-		},
-		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "The Resource ASK Bot needs some information to ensure that we are searching for the most relevant resources for you, we will require:\n	➊ Resource or file link\n	➋ Category of resource\n	➌ Time period before expiration\n	➍ Area specifications\n	➎ Gender specifications"
-			}
-		},
-		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "Send a message in the format of _link, category, expiration time, area, gender_ (with a space and a ',' in between each clause) if you don't have any requirements please enter 'none'"
+				"text": f"*<{link}|{title}>*\n{blurb}\n⏰Expiration Date: {expiration}"
+			},
+			"accessory": {
+				"type": "image",
+				"image_url": image,
+				"alt_text": "Resource Image"
 			}
 		}
-	]
-}
+def location(area):
+		return {
+			"type": "context",
+			"elements": [
+				{
+					"type": "image",
+					"image_url": "https://cdn-icons.flaticon.com/png/512/3038/premium/3038016.png?token=exp=1651327242~hmac=03881fdf93f69e8bd82cc3ca8b2acf5e",
+					"alt_text": "Location Pin Icon"
+				},
+				{
+					"type": "plain_text",
+					"emoji": True,
+					"text": f"Location Constraints: {area}"
+				}
+			]
+		}
+	
+
+
 def resource_requirements():
 	return {
 	"type": "modal",
@@ -121,149 +157,75 @@ def resource_requirements():
 		}
 	]
 }
-def output_initial(user_name):
-    return [
-		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": f'*Welcome to the Output Command {user_name}*'
-			}
-		},
-		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "This command retrieves listings from the Resource ASK Database.\n\n*Do you want to continue with this command?*\n\n_Please press the yes or no button_"
-			},
-			"accessory": {
-				"type": "image",
-				"image_url": "https://cdn-icons.flaticon.com/png/512/874/premium/874728.png?token=exp=1650222216~hmac=ae3e55397ec8c7549d8c6a9ba3d8ffac",
-				"alt_text": "computer thumbnail"
-			}
-		},
-		{
-			"type": "actions",
-			"elements": [
-				{
-					"type": "button",
-					"text": {
-						"type": "plain_text",
-						"emoji": True,
-						"text": "Yes"
-					},
-					"style": "primary",
-					"value": "startoutput",
-					"action_id": "startoutput"
-				},
-				{
-					"type": "button",
-					"text": {
-						"type": "plain_text",
-						"emoji": True,
-						"text": "No"
-					},
-					"style": "danger",
-					"value": "stopoutput",
-					"action_id": "stopoutput"
-				}
-			]
-		}
-	]
 
-
-def user_info():
-	return {
+def personal_information():
+	return{
+	"title": {
+		"type": "plain_text",
+		"text": "Personal Information"
+	},
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit"
+	},
 	"blocks": [
 		{
 			"type": "header",
 			"text": {
 				"type": "plain_text",
-				"text": "Search Requirements",
+				"text": "Step 2/2",
 				"emoji": True
 			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "To make sure that we are looking for the resources that fit your needs we will need a bit of information related to your identity and where you reside. Resource ASK is an organization that is very purposeful with our user information see this <https://serewaya.github.io/resource-ask/how-we-protect-user-information/|link> to learn how we protect user info."
+				}
+			]
 		},
 		{
 			"type": "divider"
 		},
 		{
 			"type": "input",
-			"element": {
-				"type": "plain_text_input",
-				"action_id": "category"
-			},
-			"label": {
-				"type": "plain_text",
-				"text": "Category",
-				"emoji": True
-			}
-		},
-		{
-			"type": "input",
-			"element": {
-				"type": "datepicker",
-				"initial_date": "2022-04-28",
-				"placeholder": {
-					"type": "plain_text",
-					"text": "Select a date",
-					"emoji": True
-				},
-				"action_id": "expiry_date"
-			},
-			"label": {
-				"type": "plain_text",
-				"text": "Expiry Date",
-				"emoji": True
-			}
-		},
-		{
-			"type": "input",
+			"block_id": "area",
 			"element": {
 				"type": "static_select",
 				"placeholder": {
 					"type": "plain_text",
-					"text": "Select an item",
+					"text": "Select Your Area",
 					"emoji": True
 				},
 				"options": [
 					{
 						"text": {
 							"type": "plain_text",
-							"text": "Female",
+							"text": "Canada",
 							"emoji": True
 						},
-						"value": "value-0"
+						"value": "canada"
 					},
 					{
 						"text": {
 							"type": "plain_text",
-							"text": "Male",
+							"text": "United States",
 							"emoji": True
 						},
-						"value": "value-1"
+						"value": "united states"
 					},
 					{
 						"text": {
 							"type": "plain_text",
-							"text": "Other or None",
+							"text": "Other",
 							"emoji": True
 						},
-						"value": "value-2"
+						"value": "none"
 					}
 				],
-				"action_id": "gender_selection"
-			},
-			"label": {
-				"type": "plain_text",
-				"text": "Label",
-				"emoji": True
-			}
-		},
-		{
-			"type": "input",
-			"element": {
-				"type": "plain_text_input",
-				"action_id": "area"
+				"action_id": "static_select-action"
 			},
 			"label": {
 				"type": "plain_text",
@@ -272,7 +234,119 @@ def user_info():
 			}
 		},
 		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "The area is the scope of which we search for resources. It serves  as a crucial part of assessing your eligibility for certain resources in the Resource ASK database."
+				}
+			]
+		},
+		{
+			"type": "input",
+			"block_id": "gender",
+			"element": {
+				"type": "static_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select your Gender",
+					"emoji": True
+				},
+				"options": [
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Male",
+							"emoji": True
+						},
+						"value": "male"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Female",
+							"emoji": True
+						},
+						"value": "female"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Other/None",
+							"emoji": True
+						},
+						"value": "none"
+					}
+				],
+				"action_id": "static_select-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Gender",
+				"emoji": True
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "Some resources are specific to people of a certain gender. We require your gender to ensure that we are finding only resources that are relevant to you."
+				}
+			]
+		}
+	],
+	"type": "modal",
+	"callback_id": "output_submit_2"
+}
+def output_initial(user_name):
+    return [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": f'Hi *{user_name}*, Welcome to the Output Command ⤦'
+			}
+		},
+		{
 			"type": "divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "<google.com|What is the Output Command?>\nThis command allows for users to search \n through a database of business resources\n and returns listings that meet their requirements."
+			},
+			"accessory": {
+				"type": "image",
+				"image_url": "https://cdn-icons-png.flaticon.com/512/4756/4756496.png",
+				"alt_text": "calendar thumbnail"
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "image",
+					"image_url": "https://cdn-icons.flaticon.com/png/512/4194/premium/4194648.png?token=exp=1651271099~hmac=34044b4ea2a9ffaa25cc1d826fb260d2",
+					"alt_text": "notifications warning icon"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "Learn more about how to use the output command here"
+				}
+			]
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "plain_text",
+				"text": "Do you want to continue with this command?",
+				"emoji": True
+			}
 		},
 		{
 			"type": "actions",
@@ -281,34 +355,53 @@ def user_info():
 					"type": "button",
 					"text": {
 						"type": "plain_text",
-						"text": "Submit",
+						"text": "Yes",
 						"emoji": True
 					},
 					"style": "primary",
-					"value": "click_me_123",
-					"action_id": "submit"
+					"action_id": "startoutput"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "No",
+						"emoji": True
+					},
+					"action_id": "stopoutput"
 				}
 			]
 		}
 	]
-}
-def user_entry(link, section, expiration, area, gender):
-	return {
-		"blocks": [
+
+
+
+def user_entry(section, expiration, area, gender):
+	return [
 		{
-			"type": "section",
+			"type": "header",
 			"text": {
-				"type": "mrkdwn",
-				"text": "Here are your search requirements:\n*Please review them and press the approve or deny button to get your results*"
+				"type": "plain_text",
+				"text": "Here Are Your Resource Requirements",
+				"emoji": True
 			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "plain_text",
+					"text": "Please review them and press the approve or deny button to get your results.",
+					"emoji": True
+				}
+			]
+		},
+		{
+			"type": "divider"
 		},
 		{
 			"type": "section",
 			"fields": [
-				{
-					"type": "mrkdwn",
-					"text": "*Link: *\n"+str(link)
-				},
 				{
 					"type": "mrkdwn",
 					"text": "*Category: *\n"+str(section)
@@ -326,6 +419,9 @@ def user_entry(link, section, expiration, area, gender):
 					"text": "*Gender:*\n"+str(gender)
 				}
 			]
+		},
+		{
+			"type": "divider"
 		},
 		{
 			"type": "actions",
@@ -348,14 +444,13 @@ def user_entry(link, section, expiration, area, gender):
 						"emoji": True,
 						"text": "Deny"
 					},
-					"style": "danger",
 					"value": "click_me_123",
 					"action_id": "dontsearch"
 				}
 			]
 		}
 	]
-}
+
 
 def homepage():
 	return {"type": "home",
