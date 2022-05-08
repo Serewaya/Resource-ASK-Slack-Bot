@@ -12,20 +12,19 @@ import functions
 import pymongo
 from pymongo import MongoClient 
 from linkpreview import link_preview
-from slack_bolt.adapter.socket_mode import SocketModeHandler
-from http.server import BaseHTTPRequestHandler
-from datetime import datetime
+import time
+from googlesearch import search
+from search import linksearch
+from search import websearch
+from search import keywords
+from stepinformation import stepchanges
 
-class handler(BaseHTTPRequestHandler):
+timeout = 60.0 # Sixty seconds
 
-  def do_GET(self):
-    self.send_response(200)
-    self.send_header('Content-type', 'text/plain')
-    self.end_headers()
-    self.wfile.write(str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')).encode())
-    return
 page =1
+keyword = 0
 
+#Main Database
 cluster=MongoClient("mongodb+srv://projectask:wD4odl0AK8ahUmFc@cluster0.e0sdb.mongodb.net/discord?retryWrites=true&w=majority")
 db = cluster["discord"]
 collection = db["id"]
@@ -38,6 +37,14 @@ app = App(
     token=os.environ.get("SLACK_BOT_TOKEN"),
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
 )
+
+
+@app.message("verify")
+def ask_for_introduction(event, say):
+    welcome_channel_id = "C03F62GH8N4"
+    user_id = event["user"]
+    text = f"Welcome to the team, <@{user_id}>! 🎉 You can introduce yourself in this channel."
+    say(text=text, channel=welcome_channel_id)
 @app.event("app_home_opened")
 def app_home_opened(event, client, logger):
     user_id = event["user"]
@@ -220,4 +227,5 @@ def action_button_click(body, ack, say, client):
 
 
 if __name__ == "__main__":
-    app.start(port=int(os.environ.get("PORT", 3000)))
+    app.start()
+    
