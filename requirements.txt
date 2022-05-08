@@ -4,3 +4,10 @@ flask
 aiohttp
 google
 pymongo[srv]
+slack
+os
+pathlib
+dotenv
+flask
+slackeventsapi
+string
