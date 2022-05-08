@@ -238,13 +238,14 @@ import string
 from datetime import datetime, timedelta
 import time
 
-load_dotenv()
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
 
 app = Flask(__name__)
 slack_event_adapter = SlackEventAdapter(
-    os.environ['SIGNING_SECRET_'], '/slack/events', app)
+    os.environ.get("SLACK_SIGNING_SECRET"), '/slack/events', app)
 
-client = slack.WebClient(token=os.environ['SLACK_TOKEN_'])
+client = slack.WebClient(token=os.environ.get("SLACK_SIGNING_SECRET"))
 BOT_ID = client.api_call("auth.test")['user_id']
 
 message_counts = {}
