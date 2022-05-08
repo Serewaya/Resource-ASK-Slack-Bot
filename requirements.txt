@@ -5,7 +5,6 @@ aiohttp
 google
 pymongo[srv]
 slack
-os
 pathlib
 dotenv
 flask
