@@ -221,4 +221,4 @@ def action_button_click(body, ack, say, client):
 
 
 if __name__ == "__main__":
-    app.start(host='0.0.0.0',port=8000)
+    app.start(port=8000)
