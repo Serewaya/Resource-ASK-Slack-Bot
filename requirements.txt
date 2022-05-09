@@ -1,12 +1,8 @@
 slack_bolt
-gunicorn
-flask
 aiohttp
 google
 pymongo[srv]
 slack
 pathlib
-flask
-slackeventsapi
 python-dotenv
 linkpreview
