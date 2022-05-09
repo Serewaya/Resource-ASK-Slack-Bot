@@ -1,12 +1,7 @@
 import os
-from pydoc import pager, text
-from sunau import Au_read
-from tkinter import PAGES
-from unicodedata import category
 from slack_bolt import App
 from pathlib import Path
 from dotenv import load_dotenv
-from flask import Flask
 import blocks
 import functions
 import pymongo
