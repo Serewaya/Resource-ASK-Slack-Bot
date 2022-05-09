@@ -1,4 +1,5 @@
 import os
+import logging
 import slack_bolt
 from pathlib import Path
 from dotenv import load_dotenv
