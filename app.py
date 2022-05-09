@@ -14,7 +14,9 @@ from search import linksearch
 from search import websearch
 from search import keywords
 from stepinformation import stepchanges
-
+from flask import Flask, request
+from slack_bolt import App
+from slack_bolt.adapter.flask import SlackRequestHandler
 
 page =1
 keyword = 0
@@ -33,6 +35,16 @@ app = slack_bolt.App(
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
 )
 
+@app.command("/hello")
+def hello(ack):
+    ack("Hi!")
+
+flask_app = Flask(__name__)
+handler = SlackRequestHandler(app)
+
+@flask_app.route("/slack/events", methods=["POST"])
+def slack_events():
+    return handler.handle(request)
 
 @app.message("verify")
 def ask_for_introduction(event, say):
@@ -222,4 +234,4 @@ def action_button_click(body, ack, say, client):
 
 
 if __name__ == "__main__":
-    app.start(8000)
+    flask_app.run(port=8000)
