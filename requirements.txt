@@ -1,5 +1,5 @@
-slack_bolt==1.13.1
-slack_bolt.adapter.flask
+slack_bolt>=1.1.1,<1.2
+Flask>=1.1
 aiohttp
 google
 pymongo[srv]
