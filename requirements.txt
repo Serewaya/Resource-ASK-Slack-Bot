@@ -9,3 +9,4 @@ pathlib
 flask
 slackeventsapi
 python-dotenv
+linkpreview
