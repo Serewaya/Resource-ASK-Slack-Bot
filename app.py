@@ -31,10 +31,6 @@ app = slack_bolt.App(
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
 )
 
-@app.command("/hello")
-def hello(ack):
-    ack("Hi!")
-
 flask_app = Flask(__name__)
 handler = SlackRequestHandler(app)
 
