@@ -1,21 +1,17 @@
 import os
-import logging
 import slack_bolt
 from pathlib import Path
 from dotenv import load_dotenv
 import blocks
 import functions
-import pymongo
 from pymongo import MongoClient 
 from linkpreview import link_preview
-import time
 from googlesearch import search
 from search import linksearch
 from search import websearch
 from search import keywords
 from stepinformation import stepchanges
 from flask import Flask, request
-from slack_bolt import App
 from slack_bolt.adapter.flask import SlackRequestHandler
 
 page =1
